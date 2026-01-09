@@ -27,7 +27,9 @@ Current deep learning systems suffer from the *Stability-Plasticity Dilemma*: th
 | Action | Zero-shot deliberation | Trust-gated routing |
 | Language | 37% training skipped | Semantic data pruning |
 | Architecture | 89% conflict preserved | Independent networks required |
-| **Average** | **45.8% efficiency gain** | |
+| Memory | 84.8% compute saved | Progressive LOD resolution |
+| Topology | Adaptive architecture | Fractal Consciousness Equation |
+| **Average** | **52.3% efficiency gain** | |
 
 ---
 
@@ -130,6 +132,47 @@ Shared Backbone on OOD data:   Low disagreement  → "Confident but WRONG"
 
 **The efficiency comes from selective learning, not parameter sharing.**
 
+### Phase 9: LOD Memory (Progressive Resolution Recall)
+- **Problem**: Memory queries always use full resolution, wasting compute
+- **Result**: **84.8% compute saved** with BETTER accuracy (91.6% vs 86.2%)
+- **Insight**: 54.3% of queries answered with just 4 latent dimensions
+
+```
+Level 0 (4 dims):   54.3% of queries  ← "Vague memory suffices"
+Level 1 (16 dims):  31.2% of queries
+Level 2 (64 dims):  10.8% of queries
+Level 3 (256 dims):  3.7% of queries  ← "Full recall needed"
+```
+
+**Memory is progressive refinement, not database lookup.**
+
+### Phase 10: Fractal Memory (The Consciousness Equation)
+- **Problem**: Fixed architecture can't adapt to varying complexity
+- **Result**: **Architecture grows where confused** (1→32 regions during learning)
+- **Insight**: Shannon's entropy is the fundamental signal for architecture adaptation
+
+```
+The Consciousness Equation:
+  H > C → GROW  (Entropy exceeds capacity → need more structure)
+  H < C → PRUNE (Entropy below capacity → can compress)
+  H ≈ C → EQUILIBRIUM (Matched to task complexity)
+```
+
+**Topological Intelligence: Network structure becomes a map of epistemic landscape.**
+
+### Phase 11: Unified Fractal Brain (One Mechanism, Three Expressions)
+- **Problem**: Do all three partitions need different architectures?
+- **Result**: **Same fractal mechanism, different parameters**
+- **Insight**: Structural differentiation emerges from uniform rules
+
+| Partition | Regions | Character |
+|-----------|---------|-----------|
+| Archive | 14 | Sparse - long-term storage |
+| Dialogue | 93 | Dense - fine discrimination |
+| Imagination | 33 | Smooth - creative generation |
+
+**One mechanism, three expressions.**
+
 ---
 
 ## Quick Start
@@ -208,6 +251,10 @@ ddml/
 ├── dialogue_llm.py               # Phase 6: LLMs with uncertainty
 ├── continual_learning_experiment.py  # Phase 7: 10-task sequential learning
 ├── groupthink_test.py            # Phase 8: Shared vs Independent networks
+├── lod_memory_experiment.py      # Phase 9: Progressive resolution recall
+├── fractal_memory_experiment.py  # Phase 10: Entropy-driven architecture
+├── fractal_dreaming_experiment.py # Wake/dream consolidation cycle
+├── unified_fractal_brain.py      # Phase 11: One mechanism, three expressions
 ├── latent_memory_experiment.py   # Memory optimization experiments
 ├── intelligence_per_watt.py      # The Money Plot visualization
 ├── paper/

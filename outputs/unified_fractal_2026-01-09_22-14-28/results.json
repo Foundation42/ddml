@@ -1,0 +1,416 @@
+{
+  "history": [
+    {
+      "task": 0,
+      "wake_stats": {
+        "archive": {
+          "total_regions": 1,
+          "max_resolution": 0,
+          "avg_entropy": 0.5,
+          "high_h_regions": 1,
+          "low_h_regions": 0,
+          "total_splits": 0,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 11,
+          "max_resolution": 8,
+          "avg_entropy": 0.6695710584191411,
+          "high_h_regions": 11,
+          "low_h_regions": 0,
+          "total_splits": 10,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 7,
+          "max_resolution": 6,
+          "avg_entropy": 2.702619411831497,
+          "high_h_regions": 7,
+          "low_h_regions": 0,
+          "total_splits": 6,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.9855079696873201
+        }
+      },
+      "dream_stats": {
+        "archive": {
+          "total_regions": 4,
+          "max_resolution": 3,
+          "avg_entropy": 0.9142732689165671,
+          "high_h_regions": 4,
+          "low_h_regions": 0,
+          "total_splits": 3,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 13,
+          "max_resolution": 8,
+          "avg_entropy": 0.6777133860229175,
+          "high_h_regions": 13,
+          "low_h_regions": 0,
+          "total_splits": 12,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 7,
+          "max_resolution": 6,
+          "avg_entropy": 2.702619411831497,
+          "high_h_regions": 7,
+          "low_h_regions": 0,
+          "total_splits": 6,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.9855079696873201
+        }
+      },
+      "acc_archive": 0.0,
+      "acc_dialogue": 1.0,
+      "trust": 0.5,
+      "confidence": 0.9855079696873201
+    },
+    {
+      "task": 1,
+      "wake_stats": {
+        "archive": {
+          "total_regions": 4,
+          "max_resolution": 3,
+          "avg_entropy": 0.9142732689165671,
+          "high_h_regions": 4,
+          "low_h_regions": 0,
+          "total_splits": 3,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 38,
+          "max_resolution": 8,
+          "avg_entropy": 0.6936529115441881,
+          "high_h_regions": 38,
+          "low_h_regions": 0,
+          "total_splits": 37,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 16,
+          "max_resolution": 6,
+          "avg_entropy": 2.349545395754207,
+          "high_h_regions": 16,
+          "low_h_regions": 0,
+          "total_splits": 15,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.34309581454434834
+        }
+      },
+      "dream_stats": {
+        "archive": {
+          "total_regions": 7,
+          "max_resolution": 4,
+          "avg_entropy": 0.9860158877885257,
+          "high_h_regions": 7,
+          "low_h_regions": 0,
+          "total_splits": 6,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 44,
+          "max_resolution": 8,
+          "avg_entropy": 0.6810121366369599,
+          "high_h_regions": 44,
+          "low_h_regions": 0,
+          "total_splits": 43,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 16,
+          "max_resolution": 6,
+          "avg_entropy": 2.349545395754207,
+          "high_h_regions": 16,
+          "low_h_regions": 0,
+          "total_splits": 15,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.34309581454434834
+        }
+      },
+      "acc_archive": 0.0,
+      "acc_dialogue": 0.5366430260047281,
+      "trust": 0.5,
+      "confidence": 0.34309581454434834
+    },
+    {
+      "task": 2,
+      "wake_stats": {
+        "archive": {
+          "total_regions": 7,
+          "max_resolution": 4,
+          "avg_entropy": 0.9860158877885257,
+          "high_h_regions": 7,
+          "low_h_regions": 0,
+          "total_splits": 6,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 53,
+          "max_resolution": 8,
+          "avg_entropy": 0.6577009953544115,
+          "high_h_regions": 52,
+          "low_h_regions": 1,
+          "total_splits": 52,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 18,
+          "max_resolution": 6,
+          "avg_entropy": 3.0281478437557086,
+          "high_h_regions": 18,
+          "low_h_regions": 0,
+          "total_splits": 17,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.8466347174590652
+        }
+      },
+      "dream_stats": {
+        "archive": {
+          "total_regions": 8,
+          "max_resolution": 4,
+          "avg_entropy": 0.9912650135058143,
+          "high_h_regions": 8,
+          "low_h_regions": 0,
+          "total_splits": 7,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 62,
+          "max_resolution": 8,
+          "avg_entropy": 0.6520780075313176,
+          "high_h_regions": 62,
+          "low_h_regions": 0,
+          "total_splits": 61,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 18,
+          "max_resolution": 6,
+          "avg_entropy": 3.0281478437557086,
+          "high_h_regions": 18,
+          "low_h_regions": 0,
+          "total_splits": 17,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.8466347174590652
+        }
+      },
+      "acc_archive": 0.0,
+      "acc_dialogue": 0.3279313632030505,
+      "trust": 0.5,
+      "confidence": 0.8466347174590652
+    },
+    {
+      "task": 3,
+      "wake_stats": {
+        "archive": {
+          "total_regions": 8,
+          "max_resolution": 4,
+          "avg_entropy": 0.9912650135058143,
+          "high_h_regions": 8,
+          "low_h_regions": 0,
+          "total_splits": 7,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 69,
+          "max_resolution": 8,
+          "avg_entropy": 0.6513268307161648,
+          "high_h_regions": 69,
+          "low_h_regions": 0,
+          "total_splits": 68,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 23,
+          "max_resolution": 6,
+          "avg_entropy": 2.7757668401611038,
+          "high_h_regions": 23,
+          "low_h_regions": 0,
+          "total_splits": 22,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.5684912821947313
+        }
+      },
+      "dream_stats": {
+        "archive": {
+          "total_regions": 11,
+          "max_resolution": 4,
+          "avg_entropy": 0.9916693501246644,
+          "high_h_regions": 11,
+          "low_h_regions": 0,
+          "total_splits": 10,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 73,
+          "max_resolution": 8,
+          "avg_entropy": 0.65297761400876,
+          "high_h_regions": 73,
+          "low_h_regions": 0,
+          "total_splits": 72,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 23,
+          "max_resolution": 6,
+          "avg_entropy": 2.7757668401611038,
+          "high_h_regions": 23,
+          "low_h_regions": 0,
+          "total_splits": 22,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.5684912821947313
+        }
+      },
+      "acc_archive": 0.24296367572768823,
+      "acc_dialogue": 0.24296367572768823,
+      "trust": 0.5,
+      "confidence": 0.5684912821947313
+    },
+    {
+      "task": 4,
+      "wake_stats": {
+        "archive": {
+          "total_regions": 11,
+          "max_resolution": 4,
+          "avg_entropy": 0.9916693501246644,
+          "high_h_regions": 11,
+          "low_h_regions": 0,
+          "total_splits": 10,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 89,
+          "max_resolution": 8,
+          "avg_entropy": 0.6549812583258269,
+          "high_h_regions": 88,
+          "low_h_regions": 0,
+          "total_splits": 88,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 33,
+          "max_resolution": 6,
+          "avg_entropy": 2.589627316266851,
+          "high_h_regions": 33,
+          "low_h_regions": 0,
+          "total_splits": 32,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.7256230634163261
+        }
+      },
+      "dream_stats": {
+        "archive": {
+          "total_regions": 14,
+          "max_resolution": 4,
+          "avg_entropy": 0.9908543874652694,
+          "high_h_regions": 14,
+          "low_h_regions": 0,
+          "total_splits": 13,
+          "role": "archive"
+        },
+        "dialogue": {
+          "total_regions": 93,
+          "max_resolution": 8,
+          "avg_entropy": 0.6570684564710151,
+          "high_h_regions": 93,
+          "low_h_regions": 0,
+          "total_splits": 92,
+          "role": "dialogue"
+        },
+        "imagination": {
+          "total_regions": 33,
+          "max_resolution": 6,
+          "avg_entropy": 2.589627316266851,
+          "high_h_regions": 33,
+          "low_h_regions": 0,
+          "total_splits": 32,
+          "role": "imagination"
+        },
+        "hormones": {
+          "trust": 0.5,
+          "confidence": 0.7256230634163261
+        }
+      },
+      "acc_archive": 0.005837711617046118,
+      "acc_dialogue": 0.19108776026464291,
+      "trust": 0.5,
+      "confidence": 0.7256230634163261
+    }
+  ],
+  "final_stats": {
+    "archive": {
+      "total_regions": 14,
+      "max_resolution": 4,
+      "avg_entropy": 0.9908543874652694,
+      "high_h_regions": 14,
+      "low_h_regions": 0,
+      "total_splits": 13,
+      "role": "archive"
+    },
+    "dialogue": {
+      "total_regions": 93,
+      "max_resolution": 8,
+      "avg_entropy": 0.6570684564710151,
+      "high_h_regions": 93,
+      "low_h_regions": 0,
+      "total_splits": 92,
+      "role": "dialogue"
+    },
+    "imagination": {
+      "total_regions": 33,
+      "max_resolution": 6,
+      "avg_entropy": 2.589627316266851,
+      "high_h_regions": 33,
+      "low_h_regions": 0,
+      "total_splits": 32,
+      "role": "imagination"
+    },
+    "hormones": {
+      "trust": 0.5,
+      "confidence": 0.7256230634163261
+    }
+  },
+  "architecture": {
+    "archive_params": {
+      "split_threshold": 0.4,
+      "role": "sparse"
+    },
+    "dialogue_params": {
+      "split_threshold": 0.1,
+      "role": "dense"
+    },
+    "imagination_params": {
+      "split_threshold": 0.2,
+      "role": "smooth"
+    }
+  }
+}

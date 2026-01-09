@@ -24,11 +24,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, GPT2Config
 from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
 from datetime import datetime
 from pathlib import Path
 import json
+from collections import deque
+import random
 
 
 @dataclass
@@ -51,6 +53,13 @@ class DialogueLLMConfig:
 
     # Uncertainty responses
     hedge_phrases: List[str] = None
+
+    # Learning settings
+    learning_rate: float = 1e-5
+    memory_size: int = 1000  # Size of replay buffer
+    min_agreement_to_learn: float = 0.6  # Only learn when agreement is BELOW this
+    replay_batch_size: int = 4
+    replay_ratio: float = 0.5  # Ratio of replay vs new samples
 
     def __post_init__(self):
         if self.hedge_phrases is None:
@@ -107,6 +116,19 @@ class DialogueLLM:
         self.total_generations = 0
         self.uncertain_generations = 0
         self.high_uncertainty_generations = 0
+
+        # Learning components
+        self.memory_buffer = deque(maxlen=self.config.memory_size)
+        self.optimizer_a = torch.optim.AdamW(
+            self.llm_a.parameters(), lr=self.config.learning_rate
+        )
+        self.optimizer_b = torch.optim.AdamW(
+            self.llm_b.parameters(), lr=self.config.learning_rate
+        )
+
+        # Learning statistics
+        self.learning_updates = 0
+        self.skipped_updates = 0  # When agreement was too high (already knew it)
 
         print("DialogueLLM ready!")
 
@@ -357,8 +379,304 @@ class DialogueLLM:
             "uncertain_generations": self.uncertain_generations,
             "high_uncertainty_generations": self.high_uncertainty_generations,
             "uncertainty_rate": self.uncertain_generations / max(self.total_generations, 1),
-            "avg_agreement": np.mean(self.agreement_history) if self.agreement_history else 0
+            "avg_agreement": np.mean(self.agreement_history) if self.agreement_history else 0,
+            "learning_updates": self.learning_updates,
+            "skipped_updates": self.skipped_updates,
+            "memory_size": len(self.memory_buffer),
+            "learning_efficiency": self.learning_updates / max(self.learning_updates + self.skipped_updates, 1)
         }
+
+    # ==================== LEARNING METHODS ====================
+
+    def store_memory(self, text: str, importance: float = 1.0):
+        """
+        Store text in memory buffer for replay.
+
+        Args:
+            text: The text to remember
+            importance: How important this memory is (affects replay probability)
+        """
+        self.memory_buffer.append({
+            "text": text,
+            "importance": importance,
+            "timestamp": datetime.now().isoformat()
+        })
+
+    def compute_loss(
+        self,
+        input_ids: torch.Tensor,
+        model: nn.Module
+    ) -> torch.Tensor:
+        """
+        Compute cross-entropy loss for next token prediction.
+        """
+        outputs = model(input_ids, labels=input_ids)
+        return outputs.loss
+
+    def selective_learn(
+        self,
+        text: str,
+        store_if_learned: bool = True,
+        verbose: bool = False
+    ) -> Dict:
+        """
+        Learn from text ONLY if the models disagree.
+
+        This is the key Dialogue Model insight applied to LLMs:
+            - If A and B agree → they already "know" this → skip
+            - If A and B disagree → uncertainty → LEARN
+
+        Returns dict with learning metrics.
+        """
+        # Tokenize
+        inputs = self.tokenizer(
+            text,
+            return_tensors="pt",
+            truncation=True,
+            max_length=512
+        ).to(self.device)
+        input_ids = inputs["input_ids"]
+
+        # First, measure agreement WITHOUT gradients
+        self.llm_a.eval()
+        self.llm_b.eval()
+
+        with torch.no_grad():
+            outputs_a = self.llm_a(input_ids)
+            outputs_b = self.llm_b(input_ids)
+
+            # Get logits for all positions
+            logits_a = outputs_a.logits
+            logits_b = outputs_b.logits
+
+            # Compute agreement across all tokens
+            agreements = []
+            for pos in range(logits_a.shape[1]):
+                agreement, _ = self.compute_agreement(
+                    logits_a[:, pos, :],
+                    logits_b[:, pos, :]
+                )
+                agreements.append(agreement)
+
+            avg_agreement = np.mean(agreements)
+
+        result = {
+            "text": text[:50] + "..." if len(text) > 50 else text,
+            "agreement_before": avg_agreement,
+            "learned": False,
+            "loss_a": None,
+            "loss_b": None,
+            "agreement_after": None
+        }
+
+        # SELECTIVE LEARNING: Only learn if agreement is LOW
+        if avg_agreement >= self.config.min_agreement_to_learn:
+            # Models agree → they already know this → skip
+            self.skipped_updates += 1
+            if verbose:
+                print(f"  SKIP (agreement={avg_agreement:.1%} >= threshold)")
+            return result
+
+        # Models disagree → LEARN!
+        if verbose:
+            print(f"  LEARN (agreement={avg_agreement:.1%} < threshold)")
+
+        # Train both models
+        self.llm_a.train()
+        self.llm_b.train()
+
+        # Forward pass with gradients
+        loss_a = self.compute_loss(input_ids, self.llm_a)
+        loss_b = self.compute_loss(input_ids, self.llm_b)
+
+        # Backward and update
+        self.optimizer_a.zero_grad()
+        loss_a.backward()
+        self.optimizer_a.step()
+
+        self.optimizer_b.zero_grad()
+        loss_b.backward()
+        self.optimizer_b.step()
+
+        # Measure agreement after learning
+        self.llm_a.eval()
+        self.llm_b.eval()
+
+        with torch.no_grad():
+            outputs_a = self.llm_a(input_ids)
+            outputs_b = self.llm_b(input_ids)
+            logits_a = outputs_a.logits
+            logits_b = outputs_b.logits
+
+            agreements_after = []
+            for pos in range(logits_a.shape[1]):
+                agreement, _ = self.compute_agreement(
+                    logits_a[:, pos, :],
+                    logits_b[:, pos, :]
+                )
+                agreements_after.append(agreement)
+
+            avg_agreement_after = np.mean(agreements_after)
+
+        # Update stats
+        self.learning_updates += 1
+        result["learned"] = True
+        result["loss_a"] = loss_a.item()
+        result["loss_b"] = loss_b.item()
+        result["agreement_after"] = avg_agreement_after
+
+        # Store in memory for replay
+        if store_if_learned:
+            # Importance = how much we disagreed (more disagreement = more important)
+            importance = 1.0 - avg_agreement
+            self.store_memory(text, importance)
+
+        return result
+
+    def replay_memories(
+        self,
+        n_samples: Optional[int] = None,
+        verbose: bool = False
+    ) -> List[Dict]:
+        """
+        Replay memories from buffer to prevent forgetting.
+
+        Samples are weighted by importance (disagreement when first seen).
+        """
+        if len(self.memory_buffer) == 0:
+            return []
+
+        n_samples = n_samples or self.config.replay_batch_size
+
+        # Importance-weighted sampling
+        memories = list(self.memory_buffer)
+        weights = [m["importance"] for m in memories]
+        total_weight = sum(weights)
+        probs = [w / total_weight for w in weights]
+
+        # Sample memories
+        sampled = random.choices(memories, weights=probs, k=min(n_samples, len(memories)))
+
+        results = []
+        for memory in sampled:
+            # Replay without storing again
+            result = self.selective_learn(
+                memory["text"],
+                store_if_learned=False,
+                verbose=verbose
+            )
+            results.append(result)
+
+        return results
+
+    def learn_from_corpus(
+        self,
+        texts: List[str],
+        epochs: int = 1,
+        replay_every: int = 5,
+        verbose: bool = True
+    ) -> Dict:
+        """
+        Learn from a corpus of texts with memory replay.
+
+        This implements continual learning for LLMs:
+            1. For each text, only learn if uncertain (selective)
+            2. Periodically replay old memories (prevent forgetting)
+            3. Track learning efficiency
+
+        Args:
+            texts: List of texts to learn from
+            epochs: Number of passes through the corpus
+            replay_every: Replay memories every N new samples
+            verbose: Print progress
+
+        Returns:
+            Dictionary with learning statistics
+        """
+        if verbose:
+            print(f"\nLearning from {len(texts)} texts ({epochs} epochs)...")
+            print(f"Selective threshold: {self.config.min_agreement_to_learn:.0%}")
+            print("-" * 50)
+
+        stats = {
+            "total_samples": 0,
+            "learned": 0,
+            "skipped": 0,
+            "replay_sessions": 0,
+            "epoch_stats": []
+        }
+
+        for epoch in range(epochs):
+            epoch_learned = 0
+            epoch_skipped = 0
+
+            if verbose:
+                print(f"\nEpoch {epoch + 1}/{epochs}")
+
+            for i, text in enumerate(texts):
+                result = self.selective_learn(text, verbose=False)
+                stats["total_samples"] += 1
+
+                if result["learned"]:
+                    epoch_learned += 1
+                    stats["learned"] += 1
+                else:
+                    epoch_skipped += 1
+                    stats["skipped"] += 1
+
+                # Periodic replay
+                if (i + 1) % replay_every == 0 and len(self.memory_buffer) > 0:
+                    self.replay_memories(verbose=False)
+                    stats["replay_sessions"] += 1
+
+                if verbose and (i + 1) % 10 == 0:
+                    print(f"  {i+1}/{len(texts)} | Learned: {epoch_learned}, Skipped: {epoch_skipped}")
+
+            epoch_stat = {
+                "epoch": epoch + 1,
+                "learned": epoch_learned,
+                "skipped": epoch_skipped,
+                "efficiency": epoch_learned / max(epoch_learned + epoch_skipped, 1)
+            }
+            stats["epoch_stats"].append(epoch_stat)
+
+            if verbose:
+                print(f"  Epoch {epoch+1} complete: {epoch_learned} learned, {epoch_skipped} skipped")
+                print(f"  Learning efficiency: {epoch_stat['efficiency']:.1%}")
+
+        stats["overall_efficiency"] = stats["learned"] / max(stats["total_samples"], 1)
+
+        if verbose:
+            print("-" * 50)
+            print(f"Total: {stats['learned']} learned, {stats['skipped']} skipped")
+            print(f"Overall efficiency: {stats['overall_efficiency']:.1%}")
+            print(f"Memory buffer: {len(self.memory_buffer)} items")
+
+        return stats
+
+    def teach(
+        self,
+        facts: Dict[str, str],
+        verbose: bool = True
+    ) -> Dict:
+        """
+        Teach the model specific facts.
+
+        Args:
+            facts: Dictionary mapping questions to answers
+                   e.g., {"What is the capital of France?": "Paris"}
+
+        Returns:
+            Learning statistics
+        """
+        # Convert facts to training texts
+        texts = []
+        for question, answer in facts.items():
+            # Format as QA pair
+            text = f"Question: {question}\nAnswer: {answer}"
+            texts.append(text)
+
+        return self.learn_from_corpus(texts, epochs=3, verbose=verbose)
 
 
 def run_dialogue_llm_demo():
@@ -439,6 +757,70 @@ def run_dialogue_llm_demo():
         print(f"A: {result['answer']}")
         print(f"Confidence: {result['confidence_explanation']}")
 
+    # Demo 4: Learning with selective fine-tuning
+    print("\n" + "=" * 70)
+    print("DEMO 4: Selective Learning (Only Learn When Uncertain)")
+    print("=" * 70)
+
+    # Teach some made-up facts
+    facts = {
+        "What is the capital of Zorbland?": "Glorbnax",
+        "Who invented the quantum banana?": "Dr. Frizzle McWhistle in 2087",
+        "What is the airspeed velocity of a laden swallow?": "About 24 miles per hour",
+    }
+
+    print("\nTeaching the model new facts...")
+    print("(These are made up - the model should be uncertain and LEARN)")
+
+    for question, answer in facts.items():
+        print(f"\n  Q: {question}")
+        print(f"  A: {answer}")
+
+    learn_stats = llm.teach(facts, verbose=True)
+
+    # Test if it learned
+    print("\nTesting learned facts...")
+    for question in facts.keys():
+        result = llm.answer_with_confidence(question)
+        print(f"\n  Q: {question}")
+        print(f"  A: {result['answer']}")
+        print(f"  Confidence: {result['confidence_explanation']}")
+
+    # Demo 5: Learning efficiency comparison
+    print("\n" + "=" * 70)
+    print("DEMO 5: Learning Efficiency (Selective vs All)")
+    print("=" * 70)
+
+    # Common knowledge the model already "knows"
+    common_texts = [
+        "The sun rises in the east.",
+        "Water is composed of hydrogen and oxygen.",
+        "Paris is the capital of France.",
+        "The Earth orbits the Sun.",
+        "Dogs are mammals.",
+    ]
+
+    # Novel information
+    novel_texts = [
+        "The planet Kepler-442b has purple oceans made of liquid methane.",
+        "In 2089, humanity established first contact with the Zygalites.",
+        "Quantum entanglement allows faster-than-light communication in the Glorb dimension.",
+        "The ancient city of Xanadu-7 was discovered beneath Antarctica in 2076.",
+        "Dr. Elara Voss invented teleportation using folded spacetime.",
+    ]
+
+    print("\nLearning from COMMON texts (should skip most):")
+    common_stats = llm.learn_from_corpus(common_texts, epochs=1, verbose=True)
+
+    print("\nLearning from NOVEL texts (should learn most):")
+    novel_stats = llm.learn_from_corpus(novel_texts, epochs=1, verbose=True)
+
+    print("\n" + "-" * 50)
+    print("COMPARISON:")
+    print(f"  Common texts: {common_stats['learned']}/{common_stats['total_samples']} learned ({common_stats['overall_efficiency']:.1%})")
+    print(f"  Novel texts:  {novel_stats['learned']}/{novel_stats['total_samples']} learned ({novel_stats['overall_efficiency']:.1%})")
+    print(f"  Compute saved on common knowledge!")
+
     # Summary
     print("\n" + "=" * 70)
     print("SUMMARY")
@@ -448,11 +830,18 @@ def run_dialogue_llm_demo():
     print(f"\nTotal generations: {stats['total_generations']}")
     print(f"Uncertain generations: {stats['uncertain_generations']} ({stats['uncertainty_rate']:.1%})")
     print(f"Average agreement: {stats['avg_agreement']:.1%}")
+    print(f"\nLearning stats:")
+    print(f"  Updates performed: {stats['learning_updates']}")
+    print(f"  Updates skipped: {stats['skipped_updates']}")
+    print(f"  Learning efficiency: {stats['learning_efficiency']:.1%}")
+    print(f"  Memory buffer size: {stats['memory_size']}")
 
     print("\n" + "=" * 70)
-    print("KEY INSIGHT:")
-    print("  The Dialogue LLM can identify when it's uncertain and")
-    print("  communicate this to users - addressing hallucination!")
+    print("KEY INSIGHTS:")
+    print("  1. The Dialogue LLM knows when it's uncertain → addresses hallucination")
+    print("  2. Only learns when uncertain → saves compute on known material")
+    print("  3. Memory replay prevents forgetting → continual learning")
+    print("  4. The same principle: DISAGREEMENT = OPPORTUNITY TO LEARN")
     print("=" * 70)
 
     return llm

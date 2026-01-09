@@ -1,0 +1,16 @@
+{
+  "independent": {
+    "accuracy_A": 0.9727573457871181,
+    "accuracy_B": 0.9741194784977623,
+    "conflict_known": 0.005666830449152495,
+    "conflict_ood": 0.044167135658330824
+  },
+  "shared": {
+    "accuracy_A": 0.978984238178634,
+    "accuracy_B": 0.9780112862424596,
+    "conflict_known": 0.0004775847733664863,
+    "conflict_ood": 0.004876747112384213
+  },
+  "conflict_drop_percent": 88.95842567172598,
+  "verdict": "CRITICAL FAILURE: Massive Groupthink detected!"
+}

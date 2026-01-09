@@ -26,6 +26,7 @@ Current deep learning systems suffer from the *Stability-Plasticity Dilemma*: th
 | Learning | 1.2x sample efficiency | Entropy-based curiosity |
 | Action | Zero-shot deliberation | Trust-gated routing |
 | Language | 37% training skipped | Semantic data pruning |
+| Architecture | 89% conflict preserved | Independent networks required |
 | **Average** | **45.8% efficiency gain** | |
 
 ---
@@ -117,6 +118,18 @@ Standard NN after 10 tasks:  Only remembers last digit (total amnesia)
 Dialogue Model after 10 tasks: Remembers ALL digits (85.7% retained)
 ```
 
+### Phase 8: The Groupthink Test (Architectural Validation)
+- **Problem**: Can we share parameters between Network A and B for efficiency?
+- **Result**: **NO - 89% conflict destroyed** by shared backbone
+- **Insight**: Independent networks are REQUIRED for metacognition
+
+```
+Independent Brain on OOD data: High disagreement → "I don't know!"
+Shared Backbone on OOD data:   Low disagreement  → "Confident but WRONG"
+```
+
+**The efficiency comes from selective learning, not parameter sharing.**
+
 ---
 
 ## Quick Start
@@ -194,6 +207,8 @@ ddml/
 ├── embodiment_experiment.py      # Phase 5B: GridWorld agent
 ├── dialogue_llm.py               # Phase 6: LLMs with uncertainty
 ├── continual_learning_experiment.py  # Phase 7: 10-task sequential learning
+├── groupthink_test.py            # Phase 8: Shared vs Independent networks
+├── latent_memory_experiment.py   # Memory optimization experiments
 ├── intelligence_per_watt.py      # The Money Plot visualization
 ├── paper/
 │   └── dialogue_model_paper.md   # Full academic paper

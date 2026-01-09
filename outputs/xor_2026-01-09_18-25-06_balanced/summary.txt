@@ -1,0 +1,34 @@
+DIALOGUE-DRIVEN MACHINE LEARNING - XOR EXPERIMENT
+==================================================
+Timestamp: 2026-01-09_18-25-06
+Personality: balanced
+
+CONFIGURATION:
+  Phase 1 (XOR): 200 steps
+  Phase 2 (XNOR): 200 steps
+  Phase 3 (XOR return): 100 steps
+  Batch size: 32
+  Seed: 42
+
+RESULTS:
+  Phase 1 (XOR) Final Accuracy:
+    Dialogue System: 92.2%
+    Single Baseline: 100.0%
+
+  Phase 2 (XNOR) Final Accuracy:
+    Dialogue System: 90.0%
+    Single Baseline: 78.8%
+
+  Recovery Time (steps to 80% after switch):
+    Dialogue System: 56 steps
+    Single Baseline: 122 steps
+    Speedup: 2.2x
+
+  Learning Efficiency:
+    Dialogue updates: 230/500 steps (46.0%)
+    Compute saved: 54.0%
+
+KEY FINDINGS:
+  - Dialogue system recovered 66 steps faster
+  - Selective learning saved 54% of compute
+  - Post-switch accuracy: Dialogue 90% vs Baseline 79%

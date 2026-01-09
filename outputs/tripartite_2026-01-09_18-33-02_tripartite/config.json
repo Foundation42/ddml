@@ -1,0 +1,18 @@
+{
+  "num_days": 5,
+  "steps_per_day": 200,
+  "batch_size": 32,
+  "noise_std": 0.1,
+  "seed": 42,
+  "task_schedule": [
+    "xor",
+    null,
+    "xnor",
+    null,
+    "xor"
+  ],
+  "archive_confidence_threshold": 0.85,
+  "consolidation_epochs": 50,
+  "timestamp": "2026-01-09_18-33-02",
+  "personality": "tripartite"
+}

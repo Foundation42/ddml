@@ -1,0 +1,42 @@
+[
+  {
+    "day": 1,
+    "task": "xor",
+    "archive_usage": 0.0,
+    "accuracy": 0.85421875,
+    "memories_consolidated": 159,
+    "archive_loss": 0.46725213021039963
+  },
+  {
+    "day": 2,
+    "task": "xor",
+    "archive_usage": 0.0,
+    "accuracy": 0.9034375,
+    "memories_consolidated": 215,
+    "archive_loss": 0.08301754347980023
+  },
+  {
+    "day": 3,
+    "task": "xnor",
+    "archive_usage": 1.0,
+    "accuracy": 0.0,
+    "memories_consolidated": 21,
+    "archive_loss": 0.019300663359463215
+  },
+  {
+    "day": 4,
+    "task": "xnor",
+    "archive_usage": 1.0,
+    "accuracy": 0.0,
+    "memories_consolidated": 2,
+    "archive_loss": 0.008759271278977394
+  },
+  {
+    "day": 5,
+    "task": "xor",
+    "archive_usage": 1.0,
+    "accuracy": 1.0,
+    "memories_consolidated": 0,
+    "archive_loss": 0.0
+  }
+]

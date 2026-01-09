@@ -1,0 +1,8 @@
+{
+  "grid_width": 8,
+  "grid_height": 8,
+  "n_obstacles": 10,
+  "observation_radius": 2,
+  "trust_threshold": 0.7,
+  "n_episodes": 10
+}

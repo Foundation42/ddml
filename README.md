@@ -113,7 +113,7 @@ Instead of random sampling, the **Curious Brain** analyzes classifier entropy to
 ### Installation
 
 ```bash
-git clone https://github.com/cbeauma1/ddml.git
+git clone https://github.com/Foundation42/ddml.git
 cd ddml
 pip install -r requirements.txt
 ```
@@ -218,7 +218,7 @@ If you use this code in your research, please cite:
   author={Beaumont, Christian},
   year={2025},
   journal={GitHub Repository},
-  url={https://github.com/cbeauma1/ddml}
+  url={https://github.com/Foundation42/ddml}
 }
 ```
 

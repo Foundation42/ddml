@@ -1,0 +1,57 @@
+{
+  "baseline_0_4": [
+    0.972,
+    0.979,
+    0.978,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "baseline_5_9": [
+    0.901,
+    0.923,
+    0.927
+  ],
+  "brain_0_4": [
+    0.95,
+    0.95,
+    0.95,
+    0.78,
+    0.78,
+    0.78
+  ],
+  "brain_5_9": [
+    0.848,
+    0.848,
+    0.848
+  ],
+  "summary": {
+    "pre_shock_baseline": 0.978,
+    "pre_shock_brain": 0.95,
+    "final_baseline_0_4": 0.0,
+    "final_baseline_5_9": 0.927,
+    "final_brain_0_4": 0.78,
+    "final_brain_5_9": 0.848,
+    "baseline_forgetting": 0.978,
+    "brain_forgetting": 0.16999999999999993,
+    "forgetting_reduction": 0.808,
+    "brain_archive_usage": 0.6613588110403397,
+    "brain_memory_stats": {
+      "short_term_size": 0,
+      "core_set_size": 750,
+      "seen_classes": 10,
+      "classes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    }
+  }
+}

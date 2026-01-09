@@ -1,0 +1,28 @@
+
+IMAGINATION EXPERIMENT RESULTS
+==============================
+Timestamp: 2026-01-09_18-58-40
+
+CONFIGURATION:
+  Samples per task: 3000
+  Epochs per task: 3
+  Dream samples: 500
+  VAE latent dim: 20
+
+NOISE DREAMS (Core Set Replay):
+  Pre-shock (0-4): 95.4%
+  Post-shock (0-4): 73.9%
+  Post-shock (5-9): 83.8%
+  Forgetting: 21.5%
+
+VIVID DREAMS (VAE Imagination):
+  Pre-shock (0-4): 94.7%
+  Post-shock (0-4): 87.7%
+  Post-shock (5-9): 88.5%
+  Forgetting: 7.0%
+
+KEY FINDING:
+  Vivid dreams OUTPERFORMED noise dreams
+  by 14.5% in preventing forgetting.
+
+  The ImaginationCore learned to imagine 10 different classes.

@@ -1,0 +1,6 @@
+{
+  "pool_size": 10000,
+  "bootstrap_samples": 50,
+  "samples_per_round": 50,
+  "n_rounds": 10
+}

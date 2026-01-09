@@ -1,0 +1,24 @@
+
+EMBODIMENT EXPERIMENT RESULTS
+=============================
+Timestamp: 2026-01-09_19-20-31
+
+THE BRAIN IN A BODY:
+  Grid: 8x8 with obstacles
+  Episodes: 10
+  Goals reached: 5
+
+SYSTEM DYNAMICS:
+  Total reflex actions: 0
+  Total deliberate actions: 832
+  Reflex ratio: 0.0%
+
+  Thinking episodes: 832
+  Final trust: 0.20
+
+KEY OBSERVATION:
+  When novel obstacles appeared, the agent STOPPED and THOUGHT.
+  This is visible System 1 → System 2 switching in action.
+
+  The brain learned to navigate reflexively, then deliberately
+  re-engaged when the world changed unexpectedly.

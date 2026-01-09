@@ -605,7 +605,7 @@ Decoder: 20 → 400 → 784 + Sigmoid
 
 ### A.3 Code Availability
 
-Full implementation available at: [repository URL]
+Full implementation available at: https://github.com/Foundation42/ddml
 
 ---
 

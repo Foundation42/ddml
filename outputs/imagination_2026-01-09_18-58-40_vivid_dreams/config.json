@@ -1,0 +1,7 @@
+{
+  "samples_per_task": 3000,
+  "epochs_per_task": 3,
+  "dream_samples": 500,
+  "latent_dim": 20,
+  "play_epochs": 5
+}

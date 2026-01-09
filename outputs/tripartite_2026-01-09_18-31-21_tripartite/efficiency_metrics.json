@@ -1,0 +1,9 @@
+{
+  "day1_archive_usage": 0.0,
+  "final_archive_usage": 1.0,
+  "archive_usage_increase": 1.0,
+  "total_archive_calls": 600,
+  "total_dialogue_calls": 400,
+  "compute_savings": 0.30000000000000004,
+  "total_memories_consolidated": 397
+}

@@ -1,0 +1,12 @@
+{
+  "phase1_steps": 200,
+  "phase2_steps": 200,
+  "phase3_steps": 100,
+  "batch_size": 32,
+  "noise_std": 0.1,
+  "seed": 42,
+  "run_phase3": true,
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "timestamp": "2026-01-09_18-25-06",
+  "personality": "balanced"
+}

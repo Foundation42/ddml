@@ -1,0 +1,25 @@
+TRIPARTITE BRAIN EXPERIMENT RESULTS
+==================================================
+Timestamp: 2026-01-09_18-31-21
+
+CONFIGURATION:
+  Days: 5
+  Steps per day: 200
+  Task schedule: ['xor', None, 'xnor', None, 'xor']
+  Archive confidence threshold: 0.85
+
+EFFICIENCY METRICS:
+  Day 1 Archive usage: 0.0%
+  Final Archive usage: 100.0%
+  Archive usage increase: +100.0%
+
+  Total Archive calls: 600
+  Total Dialogue calls: 400
+  Compute savings: 30.0%
+
+  Total memories consolidated: 397
+
+KEY FINDINGS:
+  - System learned to offload 100% of queries to Archive
+  - Compute savings of 30% vs pure Dialogue
+  - Archive usage increased by 100% from Day 1 to Day 5

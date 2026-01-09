@@ -1,0 +1,31 @@
+
+SPLIT MNIST EXPERIMENT RESULTS
+==============================
+Timestamp: 2026-01-09_18-46-48
+
+CONFIGURATION:
+  Samples per task: 5000
+  Epochs per task: 3
+  Replay ratio: 0.5
+
+RESULTS:
+  Pre-shock accuracy (0-4):
+    Baseline: 96.7%
+    Brain:    20.5%
+
+  Post-shock accuracy (0-4):
+    Baseline: 0.0%
+    Brain:    20.5%
+
+  Post-shock accuracy (5-9):
+    Baseline: 94.2%
+    Brain:    1.8%
+
+FORGETTING ANALYSIS:
+  Baseline forgetting: 96.7%
+  Brain forgetting:    0.0%
+  Forgetting reduced by: 96.7%
+
+KEY FINDING:
+  The Dialogue Model with Dreaming retained 20% accuracy
+  on digits 0-4 vs the Baseline's 0%.

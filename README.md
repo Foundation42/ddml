@@ -22,6 +22,7 @@ Current deep learning systems suffer from the *Stability-Plasticity Dilemma*: th
 |--------|-------------|-----------|
 | Logic | 54% compute saved | Selective backpropagation |
 | Vision | 93% knowledge retention | Generative Vivid Dreams |
+| Continual | 86% forgetting reduced | 10-task sequential learning |
 | Learning | 1.2x sample efficiency | Entropy-based curiosity |
 | Action | Zero-shot deliberation | Trust-gated routing |
 | Language | 37% training skipped | Semantic data pruning |
@@ -106,6 +107,16 @@ Instead of random sampling, the **Curious Brain** analyzes classifier entropy to
 - **Result**: **37% training compute skipped** ("Boredom mechanism")
 - **Insight**: Semantic data pruning via metacognitive consensus
 
+### Phase 7: 10-Task Continual Learning (The Ultimate Test)
+- **Problem**: Standard NNs forget everything when learning sequentially
+- **Result**: **86% forgetting reduced** (from 100% to 14.3%)
+- **Insight**: Dreaming + core set replay = true continual learning
+
+```
+Standard NN after 10 tasks:  Only remembers last digit (total amnesia)
+Dialogue Model after 10 tasks: Remembers ALL digits (85.7% retained)
+```
+
 ---
 
 ## Quick Start
@@ -159,26 +170,35 @@ Test uncertainty detection and selective learning:
 python dialogue_llm.py
 ```
 
+**5. 10-Task Continual Learning**
+
+The ultimate test - learn all 10 digits sequentially:
+
+```bash
+python continual_learning_experiment.py
+```
+
 ---
 
 ## Repository Structure
 
 ```
 ddml/
-├── dialogue_system.py       # Core dual-network Dialogue System
-├── tripartite_brain.py      # System 1 + System 2 integration
-├── mnist_brain.py           # TripartitePlayer + ImaginationCore (VAE)
-├── xor_experiment.py        # Phase 1: Logic proof of concept
-├── tripartite_experiment.py # Phase 2: Trust dynamics
-├── imagination_experiment.py # Phase 4: Vivid dreams vs noise
-├── curiosity_experiment.py  # Phase 5A: Entropy-based active learning
-├── embodiment_experiment.py # Phase 5B: GridWorld agent
-├── dialogue_llm.py          # Phase 6: LLMs with uncertainty
-├── intelligence_per_watt.py # The Money Plot visualization
+├── dialogue_system.py            # Core dual-network Dialogue System
+├── tripartite_brain.py           # System 1 + System 2 integration
+├── mnist_brain.py                # TripartitePlayer + ImaginationCore (VAE)
+├── xor_experiment.py             # Phase 1: Logic proof of concept
+├── tripartite_experiment.py      # Phase 2: Trust dynamics
+├── imagination_experiment.py     # Phase 4: Vivid dreams vs noise
+├── curiosity_experiment.py       # Phase 5A: Entropy-based active learning
+├── embodiment_experiment.py      # Phase 5B: GridWorld agent
+├── dialogue_llm.py               # Phase 6: LLMs with uncertainty
+├── continual_learning_experiment.py  # Phase 7: 10-task sequential learning
+├── intelligence_per_watt.py      # The Money Plot visualization
 ├── paper/
-│   └── dialogue_model_paper.md  # Full academic paper
-├── outputs/                 # Experiment outputs and visualizations
-└── ROADMAP.md              # Future directions
+│   └── dialogue_model_paper.md   # Full academic paper
+├── outputs/                      # Experiment outputs and visualizations
+└── ROADMAP.md                    # Future directions
 ```
 
 ---

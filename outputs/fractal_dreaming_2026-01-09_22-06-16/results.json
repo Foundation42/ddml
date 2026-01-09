@@ -1,0 +1,171 @@
+{
+  "all_stats": [
+    {
+      "total_regions": 7,
+      "max_resolution": 6,
+      "avg_resolution": 3.857142857142857,
+      "avg_entropy": 0.6751298644617182,
+      "high_entropy_regions": 7,
+      "low_entropy_regions": 0,
+      "total_splits": 6,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.00018721848198310909,
+      "phase": "wake"
+    },
+    {
+      "total_regions": 7,
+      "max_resolution": 6,
+      "avg_resolution": 3.857142857142857,
+      "avg_entropy": 0.6587410160905701,
+      "high_entropy_regions": 7,
+      "low_entropy_regions": 0,
+      "total_splits": 6,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.19003558556238812,
+      "phase": "dream"
+    },
+    {
+      "total_regions": 12,
+      "max_resolution": 6,
+      "avg_resolution": 4.333333333333333,
+      "avg_entropy": 0.6685728778309512,
+      "high_entropy_regions": 12,
+      "low_entropy_regions": 0,
+      "total_splits": 11,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.6484015844762325,
+      "phase": "wake"
+    },
+    {
+      "total_regions": 12,
+      "max_resolution": 6,
+      "avg_resolution": 4.333333333333333,
+      "avg_entropy": 0.6547082018764266,
+      "high_entropy_regions": 12,
+      "low_entropy_regions": 0,
+      "total_splits": 11,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.3142050822575887,
+      "phase": "dream"
+    },
+    {
+      "total_regions": 20,
+      "max_resolution": 6,
+      "avg_resolution": 4.85,
+      "avg_entropy": 0.6484645012480483,
+      "high_entropy_regions": 20,
+      "low_entropy_regions": 0,
+      "total_splits": 19,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.5488490369170904,
+      "phase": "wake"
+    },
+    {
+      "total_regions": 22,
+      "max_resolution": 6,
+      "avg_resolution": 4.954545454545454,
+      "avg_entropy": 0.6537255110374656,
+      "high_entropy_regions": 22,
+      "low_entropy_regions": 0,
+      "total_splits": 21,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.5851348479588826,
+      "phase": "dream"
+    },
+    {
+      "total_regions": 24,
+      "max_resolution": 6,
+      "avg_resolution": 5.083333333333333,
+      "avg_entropy": 0.6447015169872606,
+      "high_entropy_regions": 24,
+      "low_entropy_regions": 0,
+      "total_splits": 23,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.641202375292778,
+      "phase": "wake"
+    },
+    {
+      "total_regions": 24,
+      "max_resolution": 6,
+      "avg_resolution": 5.083333333333333,
+      "avg_entropy": 0.6428262493596981,
+      "high_entropy_regions": 24,
+      "low_entropy_regions": 0,
+      "total_splits": 23,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.5573960383733113,
+      "phase": "dream"
+    },
+    {
+      "total_regions": 32,
+      "max_resolution": 6,
+      "avg_resolution": 5.40625,
+      "avg_entropy": 0.6459151186202008,
+      "high_entropy_regions": 32,
+      "low_entropy_regions": 0,
+      "total_splits": 31,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.6349908746778965,
+      "phase": "wake"
+    },
+    {
+      "total_regions": 32,
+      "max_resolution": 6,
+      "avg_resolution": 5.40625,
+      "avg_entropy": 0.6469472254187355,
+      "high_entropy_regions": 32,
+      "low_entropy_regions": 0,
+      "total_splits": 31,
+      "total_merges": 0,
+      "avg_entropy_measured": 0.6333320061365764,
+      "phase": "dream"
+    }
+  ],
+  "phase_labels": [
+    "T0 Wake",
+    "T0 Dream",
+    "T1 Wake",
+    "T1 Dream",
+    "T2 Wake",
+    "T2 Dream",
+    "T3 Wake",
+    "T3 Dream",
+    "T4 Wake",
+    "T4 Dream"
+  ],
+  "accuracy_history": [
+    {
+      "task": 0,
+      "wake": 1.0,
+      "dream": 1.0
+    },
+    {
+      "task": 1,
+      "wake": 0.46335697399527187,
+      "dream": 0.47423167848699765
+    },
+    {
+      "task": 2,
+      "wake": 0.3279313632030505,
+      "dream": 0.3279313632030505
+    },
+    {
+      "task": 3,
+      "wake": 0.24224200144334856,
+      "dream": 0.24296367572768823
+    },
+    {
+      "task": 4,
+      "wake": 0.19108776026464291,
+      "dream": 0.19108776026464291
+    }
+  ],
+  "summary": {
+    "avg_wake_entropy": 0.6565567758296359,
+    "avg_dream_entropy": 0.6513896407565792,
+    "entropy_reduction_pct": 0.7871561747214373,
+    "final_regions": 32,
+    "total_splits": 31,
+    "total_merges": 0
+  }
+}

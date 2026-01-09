@@ -1,0 +1,130 @@
+{
+  "hull_history": [
+    {
+      "total_regions": 8,
+      "max_resolution": 4,
+      "avg_resolution": 3.25,
+      "avg_entropy": 0.6555113459552884,
+      "high_entropy_regions": 8,
+      "low_entropy_regions": 0,
+      "total_splits": 7,
+      "total_merges": 0
+    },
+    {
+      "total_regions": 10,
+      "max_resolution": 6,
+      "avg_resolution": 3.9,
+      "avg_entropy": 0.5817990704239037,
+      "high_entropy_regions": 10,
+      "low_entropy_regions": 0,
+      "total_splits": 9,
+      "total_merges": 0
+    },
+    {
+      "total_regions": 17,
+      "max_resolution": 6,
+      "avg_resolution": 4.647058823529412,
+      "avg_entropy": 0.6291640217640608,
+      "high_entropy_regions": 17,
+      "low_entropy_regions": 0,
+      "total_splits": 16,
+      "total_merges": 0
+    },
+    {
+      "total_regions": 17,
+      "max_resolution": 6,
+      "avg_resolution": 4.647058823529412,
+      "avg_entropy": 0.5932227307618899,
+      "high_entropy_regions": 16,
+      "low_entropy_regions": 0,
+      "total_splits": 16,
+      "total_merges": 0
+    },
+    {
+      "total_regions": 22,
+      "max_resolution": 6,
+      "avg_resolution": 5.0,
+      "avg_entropy": 0.6077138445571809,
+      "high_entropy_regions": 22,
+      "low_entropy_regions": 0,
+      "total_splits": 21,
+      "total_merges": 0
+    },
+    {
+      "total_regions": 26,
+      "max_resolution": 6,
+      "avg_resolution": 5.230769230769231,
+      "avg_entropy": 0.6259454149566068,
+      "high_entropy_regions": 26,
+      "low_entropy_regions": 0,
+      "total_splits": 25,
+      "total_merges": 0
+    },
+    {
+      "total_regions": 26,
+      "max_resolution": 6,
+      "avg_resolution": 5.230769230769231,
+      "avg_entropy": 0.6278036832669055,
+      "high_entropy_regions": 26,
+      "low_entropy_regions": 0,
+      "total_splits": 25,
+      "total_merges": 0
+    },
+    {
+      "total_regions": 27,
+      "max_resolution": 6,
+      "avg_resolution": 5.296296296296297,
+      "avg_entropy": 0.6285877235577085,
+      "high_entropy_regions": 27,
+      "low_entropy_regions": 0,
+      "total_splits": 26,
+      "total_merges": 0
+    },
+    {
+      "total_regions": 28,
+      "max_resolution": 6,
+      "avg_resolution": 5.357142857142857,
+      "avg_entropy": 0.635263820409491,
+      "high_entropy_regions": 28,
+      "low_entropy_regions": 0,
+      "total_splits": 27,
+      "total_merges": 0
+    },
+    {
+      "total_regions": 28,
+      "max_resolution": 6,
+      "avg_resolution": 5.357142857142857,
+      "avg_entropy": 0.6351493988021207,
+      "high_entropy_regions": 28,
+      "low_entropy_regions": 0,
+      "total_splits": 27,
+      "total_merges": 0
+    }
+  ],
+  "accuracy_history": [
+    1.0,
+    0.5366430260047281,
+    0.3279313632030505,
+    0.24296367572768823,
+    0.19108776026464291,
+    0.14458630409550655,
+    0.13707254256689083,
+    0.2313833104652613,
+    0.10343677010343677,
+    0.1009
+  ],
+  "final_stats": {
+    "total_regions": 28,
+    "max_resolution": 6,
+    "avg_resolution": 5.357142857142857,
+    "avg_entropy": 0.6351493988021207,
+    "high_entropy_regions": 28,
+    "low_entropy_regions": 0,
+    "total_splits": 27,
+    "total_merges": 0
+  },
+  "theory": {
+    "consciousness_equation": "H > C \u2192 Grow, H < C \u2192 Prune, H \u2248 C \u2192 Equilibrium",
+    "meaning": "Network structure = Map of epistemic landscape"
+  }
+}

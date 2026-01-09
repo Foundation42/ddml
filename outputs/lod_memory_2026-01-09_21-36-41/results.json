@@ -1,0 +1,41 @@
+{
+  "latent_dims": [
+    4,
+    16,
+    64,
+    256
+  ],
+  "confidence_thresholds": [
+    0.9,
+    0.85,
+    0.8,
+    0.0
+  ],
+  "lod": {
+    "accuracy": 0.9156,
+    "level_usage": [
+      5432,
+      2650,
+      871,
+      1047
+    ],
+    "avg_latent_dim": 38.7904
+  },
+  "full_resolution": {
+    "accuracy": 0.862,
+    "level_usage": [
+      10000,
+      0,
+      0,
+      0
+    ],
+    "avg_latent_dim": 256
+  },
+  "compute_saved_percent": 84.8475,
+  "phenomenology_mapping": {
+    "level_0": "Vague memory (gist only)",
+    "level_1": "Taking shape (some detail)",
+    "level_2": "Tip of tongue (almost there)",
+    "level_3": "Full recall (complete detail)"
+  }
+}

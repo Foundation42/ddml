@@ -575,6 +575,448 @@ class MNISTTripartiteBrain:
         }
 
 
+# =============================================================================
+# IMAGINATION CORE - The Mind's Eye (VAE for Vivid Dreaming)
+# =============================================================================
+
+class ImaginationCore(nn.Module):
+    """
+    The Mind's Eye: A Variational Autoencoder for generating vivid dreams.
+
+    Instead of dreaming with random noise (like static on a TV), the
+    ImaginationCore learns to DRAW what it has seen. During sleep,
+    it generates realistic "paintings" of past concepts.
+
+    This is Generative Replay - the system doesn't just remember
+    decision boundaries, it can recreate the experiences themselves.
+
+    Architecture:
+        Encoder: 784 -> 400 -> latent_dim (mu + logvar)
+        Decoder: latent_dim -> 400 -> 784
+
+    The latent space allows "concept algebra":
+        - Interpolate between digits
+        - Generate variations of learned concepts
+        - "Play" with ideas during imagination
+    """
+
+    def __init__(self, input_dim: int = 784, hidden_dim: int = 400, latent_dim: int = 20):
+        super().__init__()
+        self.latent_dim = latent_dim
+
+        # Encoder: Compresses images into latent space
+        self.encoder = nn.Sequential(
+            nn.Linear(input_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, latent_dim * 2)  # mu + logvar
+        )
+
+        # Decoder: Reconstructs images from latent space
+        self.decoder = nn.Sequential(
+            nn.Linear(latent_dim, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, input_dim),
+            nn.Sigmoid()  # Output in [0, 1] for images
+        )
+
+    def encode(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Encode input to latent distribution parameters."""
+        if x.dim() > 2:
+            x = x.view(x.size(0), -1)
+        h = self.encoder(x)
+        mu, logvar = h.chunk(2, dim=1)
+        return mu, logvar
+
+    def reparameterize(self, mu: torch.Tensor, logvar: torch.Tensor) -> torch.Tensor:
+        """
+        Reparameterization trick: sample z = mu + std * epsilon
+        This allows gradients to flow through the sampling operation.
+        """
+        std = torch.exp(0.5 * logvar)
+        eps = torch.randn_like(std)
+        return mu + eps * std
+
+    def decode(self, z: torch.Tensor) -> torch.Tensor:
+        """Decode latent vector to image."""
+        return self.decoder(z)
+
+    def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """Full forward pass: encode -> sample -> decode."""
+        mu, logvar = self.encode(x)
+        z = self.reparameterize(mu, logvar)
+        recon = self.decode(z)
+        return recon, mu, logvar
+
+    def imagine(self, n_samples: int = 64, device: torch.device = None) -> torch.Tensor:
+        """
+        Generate vivid dreams by sampling from the learned latent space.
+
+        Unlike random noise, these are structured samples that resemble
+        the training data - actual digit-like images.
+        """
+        if device is None:
+            device = next(self.parameters()).device
+        z = torch.randn(n_samples, self.latent_dim, device=device)
+        with torch.no_grad():
+            dreams = self.decode(z)
+        return dreams
+
+    def imagine_class(
+        self,
+        class_centroids: Dict[int, torch.Tensor],
+        n_per_class: int = 10,
+        noise_scale: float = 0.5
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Generate dreams of specific classes by sampling around class centroids.
+
+        This allows targeted replay of specific concepts during sleep.
+        """
+        dreams = []
+        labels = []
+
+        for class_id, centroid in class_centroids.items():
+            # Sample around the centroid with some noise
+            noise = torch.randn(n_per_class, self.latent_dim, device=centroid.device) * noise_scale
+            z = centroid.unsqueeze(0) + noise
+            with torch.no_grad():
+                class_dreams = self.decode(z)
+            dreams.append(class_dreams)
+            labels.extend([class_id] * n_per_class)
+
+        return torch.cat(dreams, dim=0), torch.tensor(labels, device=dreams[0].device)
+
+
+@dataclass
+class PlayerConfig(MNISTBrainConfig):
+    """Extended configuration for TripartitePlayer with imagination."""
+    # VAE settings
+    latent_dim: int = 20
+    vae_hidden_dim: int = 400
+    vae_lr: float = 0.001
+
+    # Play/Dream settings
+    play_epochs: int = 5          # How many epochs to train VAE during play
+    dream_samples: int = 500      # How many vivid dreams to generate
+    dream_ratio: float = 0.5     # Ratio of dreams to real memories
+
+
+class TripartitePlayer(MNISTTripartiteBrain):
+    """
+    The Complete Brain: Tripartite + Imagination (VAE-based Dreaming)
+
+    Upgrades from MNISTTripartiteBrain:
+        - ImaginationCore (VAE) for generating vivid dreams
+        - play_time() method for learning to draw/imagine
+        - Enhanced sleep_and_dream() with generative replay
+
+    The Daily Cycle:
+        1. Wake: Learn discriminatively (classify images)
+        2. Play: Learn generatively (draw images with VAE)
+        3. Sleep: Generate vivid dreams + consolidate to Archive
+
+    This moves from "Preventing Forgetting" to "Active Consolidation"
+    through imagination and creative replay.
+    """
+
+    def __init__(self, config: Optional[PlayerConfig] = None):
+        self.player_config = config or PlayerConfig()
+        super().__init__(self.player_config)
+
+        # The Mind's Eye - Imagination Core
+        self.imagination = ImaginationCore(
+            input_dim=self.player_config.input_dim,
+            hidden_dim=self.player_config.vae_hidden_dim,
+            latent_dim=self.player_config.latent_dim
+        ).to(self.device)
+
+        self.opt_imagination = optim.Adam(
+            self.imagination.parameters(),
+            lr=self.player_config.vae_lr
+        )
+
+        # Track class centroids in latent space (for targeted dreams)
+        self.class_centroids: Dict[int, torch.Tensor] = {}
+
+        # Metrics for imagination
+        self.imagination_losses: List[float] = []
+
+    def _vae_loss(
+        self,
+        recon: torch.Tensor,
+        x: torch.Tensor,
+        mu: torch.Tensor,
+        logvar: torch.Tensor
+    ) -> torch.Tensor:
+        """
+        VAE loss = Reconstruction Loss + KL Divergence
+
+        Reconstruction: How well can we recreate the input?
+        KL Divergence: How close is our latent distribution to N(0,1)?
+        """
+        # Flatten x for comparison
+        if x.dim() > 2:
+            x = x.view(x.size(0), -1)
+
+        # Reconstruction loss (binary cross entropy for images in [0,1])
+        # Normalize x to [0,1] if needed
+        x_norm = (x - x.min()) / (x.max() - x.min() + 1e-8)
+        recon_loss = nn.functional.binary_cross_entropy(recon, x_norm, reduction='sum')
+
+        # KL divergence: -0.5 * sum(1 + log(sigma^2) - mu^2 - sigma^2)
+        kl_loss = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+
+        return (recon_loss + kl_loss) / x.size(0)
+
+    def play_time(self, x: torch.Tensor, y: torch.Tensor) -> Dict:
+        """
+        Recess/Play: Train the VAE to reconstruct current experiences.
+
+        This is where the system learns to DRAW, not just classify.
+        By learning to recreate inputs, the imagination develops
+        an internal model of what things "look like."
+
+        Also updates class centroids in latent space for targeted dreaming.
+        """
+        x = x.to(self.device)
+        y = y.to(self.device)
+
+        if x.dim() > 2:
+            x = x.view(x.size(0), -1)
+
+        self.imagination.train()
+
+        # Forward pass
+        recon, mu, logvar = self.imagination(x)
+
+        # Compute loss
+        loss = self._vae_loss(recon, x, mu, logvar)
+
+        # Backward pass
+        self.opt_imagination.zero_grad()
+        loss.backward()
+        self.opt_imagination.step()
+
+        # Update class centroids (exponential moving average)
+        with torch.no_grad():
+            mu_detached, _ = self.imagination.encode(x)
+            for i, label in enumerate(y):
+                label_int = label.item()
+                if label_int not in self.class_centroids:
+                    self.class_centroids[label_int] = mu_detached[i].clone()
+                else:
+                    # EMA update
+                    self.class_centroids[label_int] = (
+                        0.9 * self.class_centroids[label_int] +
+                        0.1 * mu_detached[i]
+                    )
+
+        self.imagination_losses.append(loss.item())
+
+        return {
+            "vae_loss": loss.item(),
+            "n_classes_imagined": len(self.class_centroids)
+        }
+
+    def wake_step(
+        self,
+        x: torch.Tensor,
+        y: torch.Tensor,
+        force_dialogue: bool = False,
+        enable_play: bool = True
+    ) -> Dict:
+        """
+        Extended wake step that includes play time.
+
+        After learning (if we learned), we also train the imagination
+        to recreate what we saw. This prepares us for vivid dreaming.
+        """
+        # Call parent wake_step
+        result = super().wake_step(x, y, force_dialogue)
+
+        # Play time: Train imagination if we processed consciously
+        if enable_play and result["system_used"] == "dialogue":
+            play_result = self.play_time(x, y)
+            result["vae_loss"] = play_result["vae_loss"]
+
+        return result
+
+    def sleep_and_dream(self, verbose: bool = True, use_vivid_dreams: bool = True) -> Dict:
+        """
+        Enhanced sleep with vivid generative dreaming.
+
+        Instead of random noise, we generate realistic "paintings"
+        of past concepts using the ImaginationCore.
+
+        The Process:
+            1. Train imagination on today's buffer (final play session)
+            2. Generate vivid dreams from imagination
+            3. Have Archive label its own dreams (self-supervised)
+            4. Mix real memories + vivid dreams
+            5. Consolidate everything to Archive
+        """
+        memory_stats = self.memory.get_stats()
+
+        if len(self.memory.short_term_buffer) == 0:
+            if verbose:
+                print("  Sleep: No memories to consolidate")
+            return {"memories_consolidated": 0, "archive_accuracy": 0, "dream_type": "none"}
+
+        # Collect today's memories
+        xs, ys, _ = zip(*self.memory.short_term_buffer)
+        real_x = torch.cat(xs, dim=0).to(self.device)
+        real_y = torch.cat(ys, dim=0).to(self.device)
+
+        if real_x.dim() > 2:
+            real_x = real_x.view(real_x.size(0), -1)
+
+        n_real = len(real_x)
+
+        # === PHASE 1: Final Play Session (Train Imagination) ===
+        if use_vivid_dreams and len(self.class_centroids) > 0:
+            if verbose:
+                print(f"  Sleep: Final play session - refining imagination...")
+
+            dataset = torch.utils.data.TensorDataset(real_x, real_y)
+            loader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True)
+
+            for _ in range(self.player_config.play_epochs):
+                for bx, by in loader:
+                    self.play_time(bx, by)
+
+        # === PHASE 2: Generate Vivid Dreams ===
+        if use_vivid_dreams and len(self.class_centroids) > 0:
+            n_dreams = self.player_config.dream_samples
+
+            # Generate dreams around class centroids
+            dreams_per_class = n_dreams // len(self.class_centroids)
+            dream_images, _ = self.imagination.imagine_class(
+                self.class_centroids,
+                n_per_class=dreams_per_class,
+                noise_scale=0.5
+            )
+
+            # Archive labels its own dreams (self-supervised)
+            with torch.no_grad():
+                dream_logits = self.archive(dream_images)
+                dream_labels = dream_logits.argmax(dim=1)
+
+            dream_type = "vivid"
+            if verbose:
+                print(f"  Sleep: Generated {len(dream_images)} vivid dreams across {len(self.class_centroids)} classes")
+        else:
+            # Fallback to random noise dreams (pseudo-rehearsal)
+            n_dreams = int(n_real * self.player_config.dream_ratio)
+            dream_images = torch.randn(n_dreams, self.player_config.input_dim, device=self.device)
+
+            with torch.no_grad():
+                dream_logits = self.archive(dream_images)
+                dream_labels = dream_logits.argmax(dim=1)
+
+            dream_type = "noise"
+            if verbose:
+                print(f"  Sleep: Generated {n_dreams} noise dreams (fallback)")
+
+        # === PHASE 3: Mix Reality + Dreams ===
+        # Also include core set replay
+        old_xs, old_ys = [], []
+        for class_examples in self.memory.core_set.values():
+            for ox, oy in class_examples:
+                old_xs.append(ox.to(self.device))
+                old_ys.append(oy.to(self.device))
+
+        if old_xs:
+            old_x = torch.cat(old_xs, dim=0)
+            old_y = torch.cat(old_ys, dim=0)
+            if old_x.dim() > 2:
+                old_x = old_x.view(old_x.size(0), -1)
+
+            # Combine: real + dreams + old memories
+            final_x = torch.cat([real_x, dream_images, old_x], dim=0)
+            final_y = torch.cat([real_y, dream_labels, old_y], dim=0)
+            n_old = len(old_x)
+        else:
+            final_x = torch.cat([real_x, dream_images], dim=0)
+            final_y = torch.cat([real_y, dream_labels], dim=0)
+            n_old = 0
+
+        n_total = len(final_x)
+        n_dreams_actual = len(dream_images)
+
+        if verbose:
+            print(f"  Sleep: Consolidating {n_real} real + {n_dreams_actual} dreams + {n_old} replayed = {n_total} total")
+            print(f"         Core set: {memory_stats['core_set_size']} examples across {memory_stats['seen_classes']} classes")
+
+        # Update core set with today's high-confidence examples
+        self.memory._update_core_set(real_x.cpu(), real_y.cpu())
+
+        # === PHASE 4: Train Archive (Consolidation) ===
+        dataset = torch.utils.data.TensorDataset(final_x, final_y)
+        loader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True)
+
+        self.archive.train()
+        total_loss = 0.0
+
+        for epoch in range(self.player_config.consolidation_epochs):
+            epoch_loss = 0.0
+            for bx, by in loader:
+                bx, by = bx.to(self.device), by.to(self.device)
+                self.opt_archive.zero_grad()
+                out = self.archive(bx)
+                loss = self.criterion(out, by)
+                loss.backward()
+                self.opt_archive.step()
+                epoch_loss += loss.item()
+            total_loss += epoch_loss / len(loader)
+
+        avg_loss = total_loss / self.player_config.consolidation_epochs
+
+        # Evaluate Archive
+        self.archive.eval()
+        with torch.no_grad():
+            out = self.archive(final_x)
+            accuracy = (out.argmax(dim=1) == final_y).float().mean().item()
+
+        # Trust boost
+        if accuracy > 0.9:
+            old_trust = self.archive_trust
+            self.archive_trust = min(0.95, self.archive_trust + 0.2)
+            if verbose:
+                print(f"         Trust boost: {old_trust:.2f} -> {self.archive_trust:.2f}")
+
+        if verbose:
+            print(f"         Archive accuracy: {accuracy:.1%}, loss: {avg_loss:.4f}")
+
+        # Clear short-term buffer
+        self.memory.clear_short_term()
+
+        return {
+            "memories_consolidated": n_total,
+            "real_memories": n_real,
+            "dream_memories": n_dreams_actual,
+            "replayed_memories": n_old,
+            "archive_accuracy": accuracy,
+            "archive_loss": avg_loss,
+            "dream_type": dream_type
+        }
+
+    def get_state(self) -> Dict:
+        """Extended state including imagination stats."""
+        state = super().get_state()
+        state["imagination"] = {
+            "classes_learned": list(self.class_centroids.keys()),
+            "n_classes": len(self.class_centroids),
+            "avg_vae_loss": np.mean(self.imagination_losses[-100:]) if self.imagination_losses else 0
+        }
+        return state
+
+    def visualize_dreams(self, n_samples: int = 16) -> torch.Tensor:
+        """Generate sample dreams for visualization."""
+        self.imagination.eval()
+        dreams = self.imagination.imagine(n_samples, self.device)
+        return dreams.view(n_samples, 28, 28).cpu()
+
+
 if __name__ == "__main__":
     # Quick sanity check
     print("Creating MNIST Brain...")

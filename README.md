@@ -213,10 +213,10 @@ See [ROADMAP.md](ROADMAP.md) for detailed plans.
 If you use this code in your research, please cite:
 
 ```bibtex
-@article{DialogueModel2025,
+@article{DialogueModel2026,
   title={The Dialogue Model: Resolving the Stability-Plasticity Dilemma via Metacognitive Conflict},
   author={Beaumont, Christian},
-  year={2025},
+  year={2026},
   journal={GitHub Repository},
   url={https://github.com/Foundation42/ddml}
 }
